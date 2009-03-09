@@ -1,5 +1,5 @@
 <?php
-// $Id: tinymce.inc,v 1.17.2.7 2009/02/01 10:05:20 sun Exp $
+// $Id: tinymce.inc,v 1.17.2.10 2009/02/13 03:31:49 sun Exp $
 
 
 /**
@@ -111,7 +111,6 @@ function wysiwyg_tinymce_settings($editor, $config, $theme) {
   $init = array(
     'button_tile_map' => TRUE, // @todo Add a setting for this.
     'document_base_url' => base_path(),
-    'entity_encoding' => 'raw',
     'mode' => 'none',
     'plugins' => array(),
     'relative_urls' => FALSE,
@@ -300,7 +299,9 @@ function wysiwyg_tinymce_plugin_settings($editor, $profile, $plugins) {
   $settings = array();
   foreach ($plugins as $name => $plugin) {
     if (empty($plugin['internal'])) {
-      $settings[$name] = base_path() . $plugin['path'];
+      if (isset($plugin['path'])) {
+        $settings[$name] = base_path() . $plugin['path'];
+      }
     }
   }
   return $settings;
@@ -506,6 +507,13 @@ function wysiwyg_tinymce_plugins($editor) {
     ),
   );
   if ($editor['installed version'] > 3) {
+    $plugins['xhtmlxtras'] = array(
+      'path' => $editor['library path'] .'/plugins/xhtmlxtras',
+      'buttons' => array('cite' => t('Citation'), 'del' => t('Deleted'), 'abbr' => t('Abbreviation'), 'acronym' => t('Acronym'), 'ins' => t('Inserted')),
+      'url' => 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/xhtmlxtras',
+      'internal' => TRUE,
+      'load' => TRUE,
+    );
     $plugins['safari'] = array(
       'path' => $editor['library path'] .'/plugins/safari',
       'extensions' => array('safari' => t('Safari compatibility')),

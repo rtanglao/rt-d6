@@ -1,5 +1,5 @@
 <?php
-// $Id: fckeditor.inc,v 1.6.2.4 2009/02/01 05:58:25 sun Exp $
+// $Id: fckeditor.inc,v 1.6.2.5 2009/02/13 02:22:29 sun Exp $
 
 /**
  * @file
@@ -123,6 +123,10 @@ function wysiwyg_fckeditor_settings($editor, $config, $theme) {
           // Add buttons.
           if ($type == 'buttons') {
             $settings['buttons'][] = $button;
+          }
+          // Allow plugins to add or override global configuration settings.
+          if (!empty($plugins[$plugin]['options'])) {
+            $settings = array_merge($settings, $plugins[$plugin]['options']);
           }
         }
       }

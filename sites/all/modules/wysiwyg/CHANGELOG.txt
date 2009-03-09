@@ -1,4 +1,4 @@
-// $Id: CHANGELOG.txt,v 1.76.2.16 2009/02/05 01:34:51 sun Exp $
+// $Id: CHANGELOG.txt,v 1.76.2.22 2009/02/13 19:05:29 sun Exp $
 
 Wysiwyg x.x-x.x, xxxx-xx-xx
 ---------------------------
@@ -6,6 +6,15 @@ Wysiwyg x.x-x.x, xxxx-xx-xx
 
 Wysiwyg 6.x-1.x, xxxx-xx-xx
 ---------------------------
+
+
+Wysiwyg 6.x-1.0, 2009-02-13
+---------------------------
+#319363 by sun: Fixed missing spacer.gif for Teaser break plugin.
+#373672 by chawl: Added (native) xhtmlextras plugin for TinyMCE 3.
+#287025 by sun: Fixed native editor plugin options for TinyMCE and FCKeditor.
+#373542 by sun: Fixed TinyMCE: entity_encoding 'raw' removes HTML entities.
+#372806 by sun: Fixed block format configuration form element description.
 #367632 by sun: Fixed "Unexpected identifier, string or number" error in IE.
 #367632 by sun: Fixed invalid JavaScript syntax.
 #319363 by sun: Follow-up: Synced 1.x with 2.x where possible.

@@ -247,9 +247,9 @@ function image_update_5200() {
       break;
   }
   // Copy image files records into the new table.
-  //$args = array_map('db_escape_string', array_keys(image_get_sizes()));
-  //$cond = " IN ('". implode("', '",  $args) ."')";
-  //$ret[] = update_sql("INSERT INTO {image} SELECT DISTINCT f.nid, f.fid, f.filename FROM {files} f INNER JOIN {node} n ON f.nid = n.nid WHERE n.type='image' AND f.filename". $cond);
+  $args = array_map('db_escape_string', array_keys(image_get_sizes()));
+  $cond = " IN ('". implode("', '",  $args) ."')";
+  $ret[] = update_sql("INSERT INTO {image} SELECT DISTINCT f.nid, f.fid, f.filename FROM {files} f INNER JOIN {node} n ON f.nid = n.nid WHERE n.type='image' AND f.filename". $cond);
 
   // Remove old file_revision records.
   $ret[] = update_sql("DELETE FROM {file_revisions} WHERE EXISTS (SELECT * FROM {image} WHERE {image}.fid = {file_revisions}.fid)");
@@ -261,11 +261,11 @@ function image_update_5200() {
  * Updating image size settings to use scaling as the default operation.
  */
 function image_update_5201() {
-  //$sizes = _image_get_sizes();
-  //foreach ($sizes as $key => $size) {
-  //  $sizes[$key]['operation'] = 'scale';
-  //}
-  //variable_set('image_sizes', $sizes);
+  $sizes = _image_get_sizes();
+  foreach ($sizes as $key => $size) {
+    $sizes[$key]['operation'] = 'scale';
+  }
+  variable_set('image_sizes', $sizes);
   
   return array();
 }

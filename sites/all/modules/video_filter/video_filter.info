@@ -1,0 +1,10 @@
+; $Id: video_filter.info,v 1.1.2.1 2008/03/13 16:08:41 fokke Exp $
+name = Video Filter
+description = Filter to include videos from Youtube, Godtube etc
+core = 6.x
+; Information added by drupal.org packaging script on 2008-05-05
+version = "6.x-2.4"
+core = "6.x"
+project = "video_filter"
+datestamp = "1209978018"
+

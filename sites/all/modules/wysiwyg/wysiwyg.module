@@ -1,5 +1,5 @@
 <?php
-// $Id: wysiwyg.module,v 1.17.2.5 2009/02/01 10:05:20 sun Exp $
+// $Id: wysiwyg.module,v 1.17.2.8 2009/03/06 03:22:48 sun Exp $
 
 /**
  * @file
@@ -38,7 +38,7 @@ function wysiwyg_help($path, $arg) {
   switch ($path) {
     case 'admin/settings/wysiwyg/profile':
       if (empty($arg[4])) {
-        $output = '<p>'. t('A Wysiwyg profile can be associated to an input format. A Wysiwyg profile defines, which client-side editor is loaded, can define what buttons or themes are enabled for the editor, how the editor is displayed, and a few other editor-specific functions.') .'</p>';
+        $output = '<p>'. t('A Wysiwyg profile can be associated to an input format. A Wysiwyg profile defines which client-side editor is loaded, what buttons or themes are enabled for the editor, how the editor is displayed, and a few other editor-specific functions.') .'</p>';
         return $output;
       }
       break;
@@ -313,21 +313,36 @@ function wysiwyg_add_editor_settings($profile, $theme) {
 
 /**
  * Add settings for external plugins.
- * 
+ *
+ * Plugins can be used in multiple profiles, but not necessarily in all. Because
+ * of that, we need to process plugins for each profile, even if most of their
+ * settings are not stored per profile.
+ *
+ * Implementations of hook_wysiwyg_plugin() may execute different code for each
+ * editor. Therefore, we have to invoke those implementations for each editor,
+ * but process the resulting plugins separately for each profile.
+ *
+ * Drupal plugins differ to native plugins in that they have plugin-specific
+ * definitions and settings, which need to be processed only once. But they are
+ * also passed to the editor to prepare settings specific to the editor.
+ * Therefore, we load and process the Drupal plugins only once, and hand off the
+ * effective definitions for each profile to the editor.
+ *
  * @param $profile
  *   A wysiwyg editor profile.
+ *
+ * @todo Rewrite wysiwyg_process_form() to build a registry of effective
+ *   profiles in use, so we can process plugins in multiple profiles in one shot
+ *   and simplify this entire function.
  */
 function wysiwyg_add_plugin_settings($profile) {
-  static $plugins_added = array();
-  
-  // External plugins must only be loaded once.
-  // @todo Actually, each native plugin must not be added twice, but different
-  //   profiles can have different plugin-sets for the same editor.  We should
-  //   check each plugin for each editor.
-  if (isset($plugins_added[$profile->editor])) {
+  static $plugins_native = array();
+  static $processed_formats = array();
+
+  // Each input format must only processed once.
+  if (isset($processed_formats[$profile->format])) {
     return;
   }
-  $plugins_added[$profile->editor] = TRUE;
 
   $editor = wysiwyg_get_editor($profile->editor);
   // Assume that this editor does not support neither native external plugins
@@ -336,19 +351,27 @@ function wysiwyg_add_plugin_settings($profile) {
     return;
   }
 
-  // Collect native editor plugins provided via hook_wysiwyg_plugin().
-  $plugins = module_invoke_all('wysiwyg_plugin', $editor['name'], $editor['installed version']);
-  // Only keep enabled native plugins in this profile.
-  foreach ($plugins as $plugin => $meta) {
+  // Load our own plugins.
+  include_once drupal_get_path('module', 'wysiwyg') .'/wysiwyg.plugins.inc';
+
+  // Collect native external plugins for this editor provided via
+  // hook_wysiwyg_plugin().
+  if (!array_key_exists($editor['name'], $plugins_native)) {
+    $plugins_native[$editor['name']] = module_invoke_all('wysiwyg_plugin', $editor['name'], $editor['installed version']);
+  }
+  // Only keep native external plugins that are enabled in this profile.
+  foreach ($plugins_native[$editor['name']] as $plugin => $meta) {
     if (!isset($profile->settings['buttons'][$plugin])) {
-      unset($plugins[$plugin]);
+      unset($plugins_native[$editor['name']][$plugin]);
     }
   }
   // Invoke the editor's plugin settings callback, so it can populate the
-  // settings for external plugins with custom, required values.
-  $plugins = $editor['plugin settings callback']($editor, $profile, $plugins);
+  // settings for native external plugins with custom, required values.
+  $settings_native = $editor['plugin settings callback']($editor, $profile, $plugins_native[$editor['name']]);
 
-  drupal_add_js(array('wysiwyg' => array('plugins' => array($profile->editor => $plugins))), 'setting');
+  drupal_add_js(array('wysiwyg' => array('plugins' => array('format' . $profile->format => $settings_native))), 'setting');
+
+  $processed_formats[$profile->format] = TRUE;
 }
 
 /**
@@ -409,7 +432,7 @@ function wysiwyg_get_plugins($editor_name) {
     }
     // Load our own plugins.
     include_once drupal_get_path('module', 'wysiwyg') .'/wysiwyg.plugins.inc';
-  
+
     // Add editor plugins provided via hook_wysiwyg_plugin().
     $plugins = array_merge($plugins, module_invoke_all('wysiwyg_plugin', $editor['name'], $editor['installed version']));
   }

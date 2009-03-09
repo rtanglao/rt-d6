@@ -1,4 +1,4 @@
-// $Id: tinymce-2.js,v 1.7 2008/12/01 14:14:41 sun Exp $
+// $Id: tinymce-2.js,v 1.7.2.1 2009/03/06 03:22:49 sun Exp $
 
 /**
  * Initialize editor instances.
@@ -20,9 +20,12 @@ Drupal.wysiwyg.editor.init.tinymce = function(settings) {
   // Initialize editor configurations.
   for (var format in settings) {
     tinyMCE.init(settings[format]);
-  }
-  for (var plugin in Drupal.settings.wysiwyg.plugins.tinymce) {
-    tinyMCE.loadPlugin(plugin, Drupal.settings.wysiwyg.plugins.tinymce[plugin]);
+    if (Drupal.settings.wysiwyg.plugins[format]) {
+      // Load native external plugins.
+      for (var plugin in Drupal.settings.wysiwyg.plugins[format]) {
+        tinyMCE.loadPlugin(plugin, Drupal.settings.wysiwyg.plugins[format][plugin]);
+      }
+    }
   }
 };
 

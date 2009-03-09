@@ -1,5 +1,5 @@
 <?php
-// $Id: yui.inc,v 1.1 2008/12/08 18:58:10 sun Exp $
+// $Id: yui.inc,v 1.1.4.2 2009/03/04 11:27:30 sun Exp $
 
 
 /**
@@ -18,7 +18,7 @@ function wysiwyg_yui_editor() {
         'files' => array(
           'yahoo-dom-event/yahoo-dom-event.js',
           'animation/animation-min.js',
-          'element/element-beta-min.js',
+          'element/element-min.js',
           'container/container-min.js',
           'menu/menu-min.js',
           'button/button-min.js',
@@ -30,7 +30,7 @@ function wysiwyg_yui_editor() {
         'files' => array(
           'yahoo-dom-event/yahoo-dom-event.js',
           'animation/animation.js',
-          'element/element-beta.js',
+          'element/element.js',
           'container/container.js',
           'menu/menu.js',
           'button/button.js',
@@ -62,15 +62,17 @@ function wysiwyg_yui_editor() {
  *   The installed editor version.
  */
 function wysiwyg_yui_version($editor) {
-  $script = wysiwyg_get_path('yui') . '/README';
-  $script = fopen($script, 'r');
-  fgets($script);
-  fgets($script);
-  $line = fgets($script);
-  if (preg_match('@([0-9\.]+)@', $line, $version)) {
-    fclose($script);
-    return $version[1];
+  $library = $editor['library path'] . '/editor/editor.js';
+  $library = fopen($library, 'r');
+  $max_lines = 10;
+  while ($max_lines && $line = fgets($library, 60)) {
+    if (preg_match('@version:\s([0-9\.]+)$@', $line, $version)) {
+      fclose($library);
+      return $version[1];
+    }
+    $max_lines--;
   }
+  fclose($library);
 }
 
 /**

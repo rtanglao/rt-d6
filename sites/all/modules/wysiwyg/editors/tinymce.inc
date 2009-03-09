@@ -1,5 +1,5 @@
 <?php
-// $Id: tinymce.inc,v 1.17.2.10 2009/02/13 03:31:49 sun Exp $
+// $Id: tinymce.inc,v 1.17.2.11 2009/02/24 23:21:22 sun Exp $
 
 
 /**
@@ -113,10 +113,14 @@ function wysiwyg_tinymce_settings($editor, $config, $theme) {
     'document_base_url' => base_path(),
     'mode' => 'none',
     'plugins' => array(),
-    'relative_urls' => FALSE,
     'theme' => $theme,
     'width' => '100%',
+    // Strict loading mode must be enabled; otherwise TinyMCE would use
+    // document.write() in IE and Chrome.
     'strict_loading_mode' => TRUE,
+    // TinyMCE's URL conversion magic breaks Drupal modules that use a special
+    // syntax for paths. This makes 'relative_urls' obsolete.
+    'convert_urls' => FALSE,
   );
   if (isset($config['apply_source_formatting'])) {
     $init['apply_source_formatting'] = $config['apply_source_formatting'];

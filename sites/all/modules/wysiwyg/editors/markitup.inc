@@ -1,5 +1,5 @@
 <?php
-// $Id: markitup.inc,v 1.1.2.2 2009/01/06 01:40:37 sun Exp $
+// $Id: markitup.inc,v 1.1.2.3 2009/03/06 02:48:41 sun Exp $
 
 /**
  * @file
@@ -16,7 +16,7 @@ function wysiwyg_markitup_editor() {
     'title' => 'markItUp',
     'vendor url' => 'http://markitup.jaysalvat.com',
     'download url' => 'http://markitup.jaysalvat.com/downloads',
-    'library path' => wysiwyg_get_path('markitup'),
+    'library path' => wysiwyg_get_path('markitup/markitup'),
     'libraries' => array(
       '' => array(
         'title' => 'Source',
@@ -51,7 +51,7 @@ function wysiwyg_markitup_editor() {
  *   The installed editor version.
  */
 function wysiwyg_markitup_version($editor) {
-  $changelog = wysiwyg_get_path('markitup') . '/readme.txt';
+  $changelog = wysiwyg_get_path('markitup/markitup') . '/readme.txt';
   $changelog = fopen($changelog, 'r');
   $line = fgets($changelog);
   if (preg_match('@([0-9\.]+)@', $line, $version)) {
@@ -81,7 +81,7 @@ function wysiwyg_markitup_settings($editor, $config, $theme) {
   drupal_add_css($editor['library path'] . '/skins/' . $theme . '/style.css', 'theme');
   
   $settings = array(
-    'root' => wysiwyg_get_path('markitup', TRUE) . '/',
+    'root' => wysiwyg_get_path('markitup/markitup', TRUE) . '/',
     'nameSpace' => $theme,
     'markupSet' => array(),
   );

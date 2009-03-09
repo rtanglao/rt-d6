@@ -1,4 +1,4 @@
-// $Id: CHANGELOG.txt,v 1.76.2.22 2009/02/13 19:05:29 sun Exp $
+// $Id: CHANGELOG.txt,v 1.76.2.34 2009/03/09 01:35:53 sun Exp $
 
 Wysiwyg x.x-x.x, xxxx-xx-xx
 ---------------------------
@@ -6,6 +6,21 @@ Wysiwyg x.x-x.x, xxxx-xx-xx
 
 Wysiwyg 6.x-1.x, xxxx-xx-xx
 ---------------------------
+
+
+Wysiwyg 6.x-1.1, 2009-03-09
+---------------------------
+#394068 by StephaneC: markItUp: Fixed icons not displayed due to #385736.
+#385974 by sun: Fixed form element description for CSS path (for Define CSS).
+#390460 by sun: Fixed broken plugin loading due to #359626.
+#385736 by sun: Fixed markItUp: Wrong editor library location.
+#308912 by sun: Fixed TinyMCE: Buttons do not wrap in IE/Chrome.
+#380586 by sun, hass: YUI editor: Fixed version detection.
+#390224 by hass: Fixed JS error YAHOO.widget.Editor is not a constructor.
+#359626 by sun: Fixed external/Drupal plugins are not loaded for all profiles.
+#369115 by sun: Fixed TinyMCE's URL conversion magic breaks some input filters.
+#376400 by TwoD: Fixed bad grammar in help text on profile overview page.
+#367632 by sun: Fixed $this and i JavaScript variables defined in global scope.
 
 
 Wysiwyg 6.x-1.0, 2009-02-13

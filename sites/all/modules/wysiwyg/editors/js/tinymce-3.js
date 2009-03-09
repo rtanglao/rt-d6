@@ -1,4 +1,4 @@
-// $Id: tinymce-3.js,v 1.9.2.2 2009/02/04 02:55:10 sun Exp $
+// $Id: tinymce-3.js,v 1.9.2.4 2009/03/06 03:22:49 sun Exp $
 
 /**
  * Initialize editor instances.
@@ -21,9 +21,12 @@ Drupal.wysiwyg.editor.init.tinymce = function(settings) {
   // Initialize editor configurations.
   for (var format in settings) {
     tinyMCE.init(settings[format]);
-  }
-  for (var plugin in Drupal.settings.wysiwyg.plugins.tinymce) {
-    tinymce.PluginManager.load(plugin, Drupal.settings.wysiwyg.plugins.tinymce[plugin]);
+    if (Drupal.settings.wysiwyg.plugins[format]) {
+      // Load native external plugins.
+      for (var plugin in Drupal.settings.wysiwyg.plugins[format]) {
+        tinymce.PluginManager.load(plugin, Drupal.settings.wysiwyg.plugins[format][plugin]);
+      }
+    }
   }
 };
 
@@ -35,6 +38,15 @@ Drupal.wysiwyg.editor.init.tinymce = function(settings) {
 Drupal.wysiwyg.editor.attach.tinymce = function(context, params, settings) {
   // Configure editor settings for this input format.
   var ed = new tinymce.Editor(params.field, settings);
+  // Make toolbar buttons wrappable (required for IE).
+  ed.onPostRender.add(function (ed) {
+    var $toolbar = $('<div class="wysiwygToolbar"></div>');
+    $('#' + ed.editorContainer + ' table.mceToolbar > tbody > tr > td').each(function () {
+      $('<div></div>').addClass(this.className).append($(this).children()).appendTo($toolbar);
+    });
+    $('#' + ed.editorContainer + ' table.mceLayout td.mceToolbar').append($toolbar);
+    $('#' + ed.editorContainer + ' table.mceToolbar').remove();
+  });
   // Attach editor.
   ed.render();
 };
